@@ -5,4 +5,4 @@ This app was bootstrapped with create-react-app.
 ## Running it on your local machine  
 Make sure you have npm installed prior to running these following commands -  
 > `npm install` to install dependencies  
-> `npm run` to deploy on localhost  
+> `npm start` to deploy on localhost  

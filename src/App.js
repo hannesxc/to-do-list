@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 import './App.css';
 import Todo from './components/Todo';
+import Completed from './components/Completed';
 import Form from './components/Form';
-import FilterButton from './components/FilterButton';
 
 function App(props) {
   const [tasks, setTasks] = useState(props.tasks);
+  const [comp, setComp] = useState(props.comp)
 
   function addTask(name) {
     const newTask = {
@@ -18,14 +19,23 @@ function App(props) {
     setTasks([...tasks, newTask]);
   }
 
+  function completedTask(id, name) {
+    const completed = {
+      id: id,
+      name: name,
+      key: id
+    };
+    setComp([...comp, completed]);
+  }
+
   function toggleTaskComplete(id) {
-    const updatedTask = tasks.map((task) => {
+    tasks.map((task) => {
       if (id === task.id) {
-        return { ...task, isCompleted: !task.isCompleted }
+        completedTask(id, task.name);
+        deleteTask(id);
       }
       return task;
     })
-    setTasks(updatedTask);
   }
 
   function deleteTask(id) {
@@ -43,25 +53,42 @@ function App(props) {
       deleteTask={deleteTask}
     />
   ));
-  const plural = taskList.length === 1 ? "task" : "tasks";
-  const headText = `${taskList.length} ${plural} remaining`;
+  const compList = comp.map((task) => (
+    <Completed
+      id={task.id}
+      name={task.name}
+      key={task.key}
+    />
+  ));
+
+  const pluralTask = taskList.length === 1 ? "task" : "tasks";
+  const pluralComp = compList.length === 1 ? "task" : "tasks";
+  const headText = `${taskList.length} ${pluralTask} remaining`;
+  const footText = `${compList.length} ${pluralComp} completed`;
 
   return (
-    <div className="todoapp stack-large">
-      <h1>To-Do List</h1>
-      <Form addTask={addTask} />
-      <div className="filters btn-group">
-        <FilterButton />
-        <FilterButton />
-        <FilterButton />
+    <div className="row">
+      <div className="todoapp stack-large">
+        <h1>To-Do</h1>
+        <Form addTask={addTask} />
+        <h2 id="list-heading">
+          {headText}
+        </h2>
+        <ul
+          className="todo-list stack-large">
+          {taskList}
+        </ul>
       </div>
-      <h2 id="list-heading">
-        {headText}
-      </h2>
-      <ul
-        className="todo-list stack-large">
-        {taskList}
-      </ul>
+      <div className="todoapp stack-large">
+        <h1>Completed</h1>
+        <h2 id="list-heading">
+          {footText}
+        </h2>
+        <ul
+          className="todo-list stack-large">
+          {compList}
+        </ul>
+      </div>
     </div>
   );
 }
