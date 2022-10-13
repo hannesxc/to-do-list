@@ -34,11 +34,27 @@ body {
   color: #4d4d4d;
 }
 
-@media screen and (min-width: 620px) {
-  body {
-    font-size: 1.9rem;
-    line-height: 1.31579;
-  }
+.nav {
+  display: flex;
+  height: 80px;
+  padding: 30px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav button {
+  background-color: inherit;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.centered {
+  height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .row {
@@ -46,6 +62,11 @@ body {
   flex-direction: column;
   justify-content: space-evenly;
   text-align: center;
+}
+
+.invis {
+  display: none;
+  cursor: none;
 }
 
 .btn {
@@ -105,6 +126,10 @@ body {
   margin-right: auto;
 }
 
+.todo-label {
+  font-size: 25px;
+}
+
 .todoapp>form {
   max-width: 100%;
 }
@@ -150,6 +175,10 @@ body {
 }
 
 @media screen and (min-width: 620px) {
+  body {
+    font-size: 1.9rem;
+    line-height: 1.31579;
+  }
   [class*="__lg"] {
     font-size: 2.4rem;
   }
