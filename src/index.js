@@ -11,7 +11,7 @@ root.render(
       <Routes>
         <Route path='/' element={<App tasks={data} comp={completed} />} />
         <Route path='/to-do-list' element={<App tasks={data} comp={completed} />} />
-        <Route path='/signin' element={<SignIn />} />
+        <Route path='/to-do-list/signin' element={<SignIn />} />
       </Routes>
   </BrowserRouter>
 );

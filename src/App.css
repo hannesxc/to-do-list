@@ -184,6 +184,12 @@ body {
   }
 }
 
+@media screen and (max-width: 470px) {
+  .centered h2 {
+    font-size: 20px;
+  }
+}
+
 @media screen and (min-width: 550px) {
   .todoapp {
     padding: 4rem;

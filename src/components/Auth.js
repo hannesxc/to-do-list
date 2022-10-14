@@ -9,7 +9,8 @@ export default function Auth(props) {
         ui.start('#firebase-auth-container', {
             signInOptions: [
                 firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                firebase.auth.GoogleAuthProvider.PROVIDER_ID
+                firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                firebase.auth.GithubAuthProvider.PROVIDER_ID
             ],
             signInSuccessUrl: '/to-do-list'
         });

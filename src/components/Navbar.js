@@ -9,7 +9,7 @@ export default function Navbar() {
 
     const ifAuth = user ?
         <button onClick={() => firebase.auth().signOut()}>Sign Out</button> :
-        <Link to="/signin">Sign In</Link>;
+        <Link to="/to-do-list/signin">Sign In</Link>;
     return (
         <div className="nav">
             <Link to="/to-do-list">To-Do App</Link>
