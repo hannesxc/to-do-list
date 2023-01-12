@@ -1,83 +1,102 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { nanoid } from 'nanoid';
-import './App.css';
 import Navbar from './components/Navbar';
 import Todo from './components/Todo';
 import Completed from './components/Completed';
 import Form from './components/Form';
 import { AuthContext } from './Contexts/AuthContext';
-import SignIn from './components/SignIn';
+import { db } from './config';
+import { collection, query, where, updateDoc, doc, deleteDoc, onSnapshot, setDoc } from "firebase/firestore";
 
-function App(props) {
-  const [tasks, setTasks] = useState(props.tasks);
-  const [comp, setComp] = useState(props.comp)
-  const [user, setUser] = useState({});
+function App() {
+  const { user } = useContext(AuthContext)
+  const collectionRef = collection(db, 'users');
+  const [tasks, setTasks] = useState([]);
+  
+  useEffect(() => {
+    if (user) {
+      fetchData()
+    }
+    // eslint-disable-next-line
+  }, [user]);
 
-  function addTask(name) {
+  function fetchData() {
+    const q = query(collectionRef, where('uid', '==', `${user.uid}`))
+    onSnapshot(q, (querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach( doc => {
+        items.push(doc.data());
+      });
+      setTasks(items)
+    });
+  }
+
+  async function addTask(name) {
+    const randId = `todo-${nanoid()}`
     const newTask = {
-      id: `todo-${nanoid()}`,
+      id: randId,
       name: name,
       isCompleted: false,
-      key: `todo-${nanoid()}`
+      uid: user ? user.uid : randId
     };
-    setTasks([...tasks, newTask]);
+    if (user) {
+      const newTodo = doc(collectionRef, newTask.id);
+      await setDoc(newTodo, newTask);
+    } else {
+      setTasks([...tasks, newTask]);
+    }
   }
 
-  function completedTask(id, name) {
-    const completed = {
-      id: id,
-      name: name,
-      key: id
-    };
-    setComp([...comp, completed]);
+  async function toggleTaskComplete(id) {
+    if (user) {
+      const docRef = doc(db, "users", id);
+      await updateDoc(docRef, { isCompleted: true });
+    } else {
+      setTasks(tasks.map( task => {
+        if (task.id === id) {
+          task.isCompleted = true;
+        }
+        return task
+      }))
+    }
   }
 
-  function toggleTaskComplete(id) {
-    tasks.map((task) => {
-      if (id === task.id) {
-        completedTask(id, task.name);
-        deleteTask(id);
-      }
-      return task;
-    })
+  async function deleteTask(id) {
+    if (user) {
+      const docRef = doc(db, "users", id);
+      await deleteDoc(docRef);
+    } else {
+      setTasks(tasks.filter( task => task.id !== id))
+    }
   }
 
-  function deleteTask(id) {
-    const updatedTask = tasks.filter((task) => id !== task.id);
-    setTasks(updatedTask);
-  }
+  const taskList = tasks.map( task => {
+    if (task.isCompleted === false) {
+      return <Todo
+        id={task.id}
+        name={task.name}
+        isCompleted={task.isCompleted}
+        toggleTaskComplete={toggleTaskComplete}
+        deleteTask={deleteTask}
+        key={task.id}
+      />
+    }
+  });
 
-  const taskList = tasks.map((task) => (
-    <Todo
-      id={task.id}
-      name={task.name}
-      isCompleted={task.isCompleted}
-      key={task.id}
-      toggleTaskComplete={toggleTaskComplete}
-      deleteTask={deleteTask}
-    />
-  ));
-  const compList = comp.map((task) => (
-    <Completed
-      id={task.id}
-      name={task.name}
-      key={task.key}
-    />
-  ));
+  const compList = tasks.map( task => {
+    if (task.isCompleted === true) {
+      return <Completed id={task.id} name={task.name} key={task.id}/>
+    }
+  });
 
-  const pluralTask = taskList.length === 1 ? "task" : "tasks";
-  const pluralComp = compList.length === 1 ? "task" : "tasks";
-  const headText = `${taskList.length} ${pluralTask} remaining`;
-  const footText = `${compList.length} ${pluralComp} completed`;
+  const pluralTask = taskList.filter( el => el !== undefined).length === 1 ? "task" : "tasks";
+  const pluralComp = compList.filter( el => el !== undefined).length === 1 ? "task" : "tasks";
+  const headText = `${taskList.filter( el => el !== undefined).length} ${pluralTask} remaining`;
+  const footText = `${compList.filter( el => el !== undefined).length} ${pluralComp} completed`;
 
   return (
-    <div>
-      <AuthContext.Provider value={{user, setUser}}>
-        <Navbar />
-        <div className='invis'>
-          <SignIn />  
-        </div>
-      </AuthContext.Provider>
+    <>
+      <Navbar />
       <div className="row">
         <div className="todoapp stack-large">
           <h1>To-Do</h1>
@@ -101,7 +120,7 @@ function App(props) {
           </ul>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

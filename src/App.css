@@ -30,8 +30,7 @@ body {
   max-width: 1500px;
   margin: 0 auto;
   font: 1.6rem/1.25 Arial, sans-serif;
-  background-color: lightgoldenrodyellow;
-  color: #4d4d4d;
+  background-color: #E0F5E8
 }
 
 .nav {
@@ -64,14 +63,13 @@ body {
   text-align: center;
 }
 
-.invis {
-  display: none;
-  cursor: none;
+input, button {
+  background-color: #edffeb;
 }
 
 .btn {
   padding: 0.8rem 1rem 0.7rem;
-  border: 0.2rem solid #4d4d4d;
+  border: 0.2rem solid #628859;
   cursor: pointer;
 }
 
@@ -83,7 +81,7 @@ body {
 
 .btn__primary {
   color: #fff;
-  background-color: #000;
+  background-color: #93B48B;
 }
 
 .btn-group {
@@ -113,8 +111,8 @@ body {
 }
 
 .todoapp {
-  background: whitesmoke;
-  margin: 2rem 0 4rem 0;
+  background: #BCEBCB;
+  margin: 2rem 2rem 4rem;
   padding: 1rem;
   position: relative;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 2.5rem 5rem 0 rgba(0, 0, 0, 0.1);
